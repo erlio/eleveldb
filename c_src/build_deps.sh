@@ -55,13 +55,16 @@ case "$1" in
     get-deps)
         if [ ! -d leveldb ]; then
             git clone git://github.com/basho/leveldb
-            (cd leveldb && git checkout $LEVELDB_VSN)
+            (cd leveldb && git checkout $LEVELDB_VSN && patch port/atomic_pointer.h ../patches/leveldb/atomic_pointer.patch)
         fi
         ;;
 
     *)
         if [ ! -d snappy-$SNAPPY_VSN ]; then
             tar -xzf snappy-$SNAPPY_VSN.tar.gz
+            (cd snappy-$SNAPPY_VSN && \
+                cp ../patches/snappy/config.guess . && \
+                cp ../patches/snappy/config.sub .)
             (cd snappy-$SNAPPY_VSN && ./configure --prefix=$BASEDIR/system --libdir=$BASEDIR/system/lib --with-pic)
         fi
 
@@ -74,7 +77,7 @@ case "$1" in
 
         if [ ! -d leveldb ]; then
             git clone git://github.com/basho/leveldb
-            (cd leveldb && git checkout $LEVELDB_VSN)
+            (cd leveldb && git checkout $LEVELDB_VSN && patch port/atomic_pointer.h ../patches/leveldb/atomic_pointer.patch)
         fi
 
         (cd leveldb && $MAKE all)
