@@ -1,0 +1,33 @@
+--- atomic_pointer.h	2019-11-01 15:38:40.927548319 +0100
++++ atomic_pointer.h.new	2019-11-01 15:38:18.599481041 +0100
+@@ -36,6 +36,8 @@
+ #define ARCH_CPU_X86_FAMILY 1
+ #elif defined(__ARMEL__)
+ #define ARCH_CPU_ARM_FAMILY 1
++#elif defined(__aarch64__)
++#define ARCH_CPU_ARM64_FAMILY 1
+ #endif
+ 
+ namespace leveldb {
+@@ -91,6 +93,13 @@
+ }
+ #define LEVELDB_HAVE_MEMORY_BARRIER
+ 
++// ARM64
++#elif defined(ARCH_CPU_ARM64_FAMILY)
++inline void MemoryBarrier() {
++  asm volatile("dmb sy" : : : "memory");
++}
++#define LEVELDB_HAVE_MEMORY_BARRIER
++
+ #endif
+ 
+ // AtomicPointer built using platform-specific MemoryBarrier()
+@@ -147,6 +156,7 @@
+ #undef LEVELDB_HAVE_MEMORY_BARRIER
+ #undef ARCH_CPU_X86_FAMILY
+ #undef ARCH_CPU_ARM_FAMILY
++#undef ARCH_CPU_ARM64_FAMILY
+ 
+ }  // namespace port
+ }  // namespace leveldb
