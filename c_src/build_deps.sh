@@ -10,7 +10,7 @@ unset POSIX_SHELL # clear it so if we invoke other scripts, they run as ksh as w
 
 LEVELDB_VSN="2.0.23"
 
-SNAPPY_VSN="1.0.4"
+SNAPPY_VSN="1.1.7"
 
 set -e
 
@@ -62,13 +62,10 @@ case "$1" in
     *)
         if [ ! -d snappy-$SNAPPY_VSN ]; then
             tar -xzf snappy-$SNAPPY_VSN.tar.gz
-            (cd snappy-$SNAPPY_VSN && \
-                cp ../patches/snappy/config.guess . && \
-                cp ../patches/snappy/config.sub .)
-            (cd snappy-$SNAPPY_VSN && ./configure --prefix=$BASEDIR/system --libdir=$BASEDIR/system/lib --with-pic)
+            (cd snappy-$SNAPPY_VSN && mkdir build && cd build && cmake -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true -DCMAKE_INSTALL_PREFIX=$BASEDIR/system -DCMAKE_INSTALL_LIBDIR=$BASEDIR/system/lib ../)
         fi
 
-        (cd snappy-$SNAPPY_VSN && $MAKE && $MAKE install)
+        (cd snappy-$SNAPPY_VSN/build && $MAKE && $MAKE install)
 
         export CFLAGS="$CFLAGS -I $BASEDIR/system/include"
         export CXXFLAGS="$CXXFLAGS -I $BASEDIR/system/include"
