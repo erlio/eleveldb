@@ -180,7 +180,7 @@ struct EleveldbOptions
     int m_LeveldbGroomingThreads;
 
     int m_TotalMemPercent;
-    size_t m_TotalMem;
+    unsigned long m_TotalMem;
 
     bool m_LimitedDeveloper;
     bool m_FadviseWillNeed;
@@ -202,7 +202,7 @@ struct EleveldbOptions
         syslog(LOG_ERR, "  m_LeveldbGroomingThreads: %d\n", m_LeveldbGroomingThreads);
 
         syslog(LOG_ERR, "         m_TotalMemPercent: %d\n", m_TotalMemPercent);
-        syslog(LOG_ERR, "                m_TotalMem: %zd\n", m_TotalMem);
+        syslog(LOG_ERR, "                m_TotalMem: %lu\n", m_TotalMem);
 
         syslog(LOG_ERR, "        m_LimitedDeveloper: %s\n", (m_LimitedDeveloper ? "true" : "false"));
         syslog(LOG_ERR, "         m_FadviseWillNeed: %s\n", (m_FadviseWillNeed ? "true" : "false"));
@@ -240,7 +240,7 @@ ERL_NIF_TERM parse_init_option(ErlNifEnv* env, ERL_NIF_TERM item, EleveldbOption
     {
         if (option[0] == eleveldb::ATOM_TOTAL_LEVELDB_MEM)
         {
-            size_t memory_sz;
+            unsigned long memory_sz;
             if (enif_get_ulong(env, option[1], &memory_sz))
             {
                 if (memory_sz != 0)
@@ -328,7 +328,7 @@ ERL_NIF_TERM parse_open_option(ErlNifEnv* env, ERL_NIF_TERM item, leveldb::Optio
         }
         else if (option[0] == eleveldb::ATOM_BLOCK_CACHE_THRESHOLD)
         {
-            size_t memory_sz;
+            unsigned long memory_sz;
             if (enif_get_ulong(env, option[1], &memory_sz))
             {
                 if (memory_sz != 0)
